@@ -1,14 +1,32 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import httpRequest from "../../utils/httpRequest";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../redux/userSlice";
 
 function Login() {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(email);
-    console.log(password);
+
+    try {
+      const res = await httpRequest.post("/auth/login", { username, password });
+      console.log(res.data);
+      if (res.data.success) {
+        dispatch(setUser(res.data));
+        toast.success("Login Successfully");
+        navigate("/");
+      }
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   };
 
   return (
@@ -20,7 +38,7 @@ function Login() {
             src="https://seeklogo.com/images/V/v-a-mimarlik-logo-EF26BE6776-seeklogo.com.png"
             alt="logo"
           />
-          <span classNameName="font-bold">Dino</span>
+          <span className="font-bold">Dino</span>
         </div>
         <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700">
           <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
@@ -33,16 +51,16 @@ function Login() {
                   for="email"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
-                  Your email
+                  Username
                 </label>
                 <input
-                  type="email"
-                  name="email"
-                  id="email"
-                  value={email}
+                  type="text"
+                  name="username"
+                  id="username"
+                  value={username}
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your username"
+                  onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
               <div>

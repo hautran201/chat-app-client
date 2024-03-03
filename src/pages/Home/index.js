@@ -13,7 +13,7 @@ function Home({ children }) {
       {/* <!-- Main content --> */}
       <div className="flex flex-col flex-1 overflow-y-auto">
         <Header openSidebar={openSidebar} setOpenSidebar={setOpenSidebar} />
-        <div classNameName="h-full">
+        <div className="h-full">
           <Outlet />
         </div>
       </div>
